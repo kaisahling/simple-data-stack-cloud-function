@@ -1,0 +1,15 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - '--project=$PROJECT_ID'
+      - 'deploy'
+      - '$_CLOUD_FUNCTION_NAME'
+      - '--runtime'
+      - '$_PYTHON_VERSION'
+      - '--trigger-http'
+      - '--region'
+      - '$_LOCATION'
+      - '--entry-point'
+      - 'main'
+      - '--source=https://source.developers.google.com/projects/$PROJECT_ID/repos/$_REPOSITORY_NAME/moveable-aliases/$_BRANCH_NAME/paths/src'
