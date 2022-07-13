@@ -4,7 +4,7 @@ from flask import jsonify, abort
 
 from utils import load_data, transform_data, write_data, row_gen
 
-TWITTER_ID = os.getenv("TWITTER_ID", default="https://twitter.com/elonmusk")
+TWITTER_ID = os.getenv("TWITTER_ID", default="44196397")
 
 
 def main(request):
