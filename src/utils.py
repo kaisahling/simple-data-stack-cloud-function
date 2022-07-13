@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timedelta
-
+import requests
 from pandas import DataFrame
 from google.cloud import storage
 
