@@ -101,7 +101,7 @@ def write_data(row: tuple) -> None:
     :param row: a dataframe's row
     :return:
     """
-    bucket = STORAGE_CLIENT.get_bucket()
+    bucket = STORAGE_CLIENT.get_bucket(BUCKET)
     json_name = "tweet-{}.json".format(row[1])
     bucket.blob(json_name).upload_from_string(row[0], "text/json")
 
