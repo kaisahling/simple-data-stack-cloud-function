@@ -21,7 +21,7 @@ def create_url(user_id: str) -> str:
     :return:
     """
     # each day, we load tweets from last 3 days so that we can track how tweet metrics increase over time
-    start_time = (NOW - timedelta(days=3)).strftime(format="%Y-%m-%dT%H:%M:%S.000Z")
+    start_time = (NOW - timedelta(days=90)).strftime(format="%Y-%m-%dT%H:%M:%S.000Z")
     end_time = NOW.strftime(format="%Y-%m-%dT%H:%M:%S.000Z")
     return "https://api.twitter.com/2/users/{}/tweets?start_time={}&end_time={}".format(
         user_id, start_time, end_time
@@ -95,24 +95,18 @@ def transform_data(data: dict) -> DataFrame:
     return df
 
 
-def write_data(row: tuple) -> None:
+
+
+def write_data(df: DataFrame) -> None:
     """
-    Write dataframe row as json to Cloud Storage bucket
-    :param row: a dataframe's row
+    Write dataframe  as json to Cloud Storage bucket
+    :param df: dataframe
     :return:
     """
     bucket = STORAGE_CLIENT.get_bucket(BUCKET)
-    json_name = "tweet-{}.json".format(row[1])
-    bucket.blob(json_name).upload_from_string(row[0], "text/json")
+    json_name = f"tweet-{now_str}.json"
+    bucket.blob(json_name).upload_from_string(
+        df.to_json(orient="records", lines=True), "text/json"
+    )
 
 
-def row_gen(df: DataFrame):
-    """
-    Creates a generator returning a dataframe's rows
-    :param df: dataframe the generator is based on
-    :return:
-    """
-    for i in range(len(df)):
-        yield df.iloc[i : i + 1].to_json(orient="records", lines=True), df.iloc[
-            i : i + 1
-        ]["id"].iloc[0]

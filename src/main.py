@@ -2,7 +2,7 @@ import os
 
 from flask import jsonify, abort
 
-from utils import load_data, transform_data, write_data, row_gen
+from utils import load_data, transform_data, write_data
 
 TWITTER_ID = os.getenv("TWITTER_ID", default="44196397")
 
@@ -13,8 +13,7 @@ def main(request):
 
         transformed_data = transform_data(data)
 
-        rows = row_gen(transformed_data)
-        list(map(write_data, rows))
+        write_data(transformed_data)
 
         return jsonify(status="success"), 200
 
