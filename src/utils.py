@@ -4,9 +4,9 @@ import requests
 from pandas import DataFrame
 from google.cloud import storage
 
-DIRECTORY = os.getenv("SINK_DIRECTORY")
 
 BEARER_TOKEN = os.getenv("BEARER_TOKEN")
+BUCKET =  os.getenv("STORAGE_BUCKET")
 
 STORAGE_CLIENT = storage.Client()
 
@@ -101,8 +101,8 @@ def write_data(row: tuple) -> None:
     :param row: a dataframe's row
     :return:
     """
-    bucket = STORAGE_CLIENT.get_bucket(os.getenv("SINK"))
-    json_name = "{}tweet-{}.json".format(DIRECTORY, row[1])
+    bucket = STORAGE_CLIENT.get_bucket()
+    json_name = "tweet-{}.json".format(row[1])
     bucket.blob(json_name).upload_from_string(row[0], "text/json")
 
 
