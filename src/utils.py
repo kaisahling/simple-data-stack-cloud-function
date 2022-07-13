@@ -14,10 +14,10 @@ NOW = datetime.utcnow()
 now_str = NOW.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def create_url(user_id: str):
+def create_url(user_id: str) -> str:
     """
-
-    :param user_id:
+    Create Twitter api url with query parameters
+    :param user_id: Twitter user id
     :return:
     """
     # each day, we load tweets from last 3 days so that we can track how tweet metrics increase over time
@@ -28,7 +28,7 @@ def create_url(user_id: str):
     )
 
 
-def get_params():
+def get_params() -> dict:
     # Tweet fields are adjustable.
     # Options include:
     # attachments, author_id, context_annotations,
@@ -52,11 +52,11 @@ def bearer_oauth(r):
     return r
 
 
-def connect_to_endpoint(url, params):
+def connect_to_endpoint(url: str, params: dict) -> dict:
     """
-
-    :param url:
-    :param params:
+    Connects to Twitter API endpoint and fetch data
+    :param url: Endpoint url
+    :param params: Request body
     :return:
     """
     response = requests.request("GET", url, auth=bearer_oauth, params=params)
@@ -69,10 +69,10 @@ def connect_to_endpoint(url, params):
     return response.json()
 
 
-def load_data(twitter_id: str):
+def load_data(twitter_id: str) -> dict:
     """
-
-    :param twitter_id:
+    Loads data from Twitter api
+    :param twitter_id: twitter id used for call
     :return:
     """
     url = create_url(twitter_id)
@@ -81,12 +81,10 @@ def load_data(twitter_id: str):
     return json_response
 
 
-def transform_data(data: dict, person_id: int, company_id: int):
+def transform_data(data: dict) -> DataFrame:
     """
-
-    :param data:
-    :param person_id:
-    :param company_id:
+    Transform json response to pandas dataframe
+    :param data: json response from Twitter api
     :return:
     """
     df = DataFrame(data["data"])
@@ -97,10 +95,10 @@ def transform_data(data: dict, person_id: int, company_id: int):
     return df
 
 
-def write_data(row: tuple):
+def write_data(row: tuple) -> None:
     """
-
-    :param row:
+    Write dataframe row as json to Cloud Storage bucket
+    :param row: a dataframe's row
     :return:
     """
     bucket = STORAGE_CLIENT.get_bucket(os.getenv("SINK"))
@@ -108,7 +106,12 @@ def write_data(row: tuple):
     bucket.blob(json_name).upload_from_string(row[0], "text/json")
 
 
-def row_gen(df):
+def row_gen(df: DataFrame):
+    """
+    Creates a generator returning a dataframe's rows
+    :param df: dataframe the generator is based on
+    :return:
+    """
     for i in range(len(df)):
         yield df.iloc[i : i + 1].to_json(orient="records", lines=True), df.iloc[
             i : i + 1

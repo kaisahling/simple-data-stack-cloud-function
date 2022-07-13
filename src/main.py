@@ -8,7 +8,6 @@ TWITTER_ID = os.getenv("TWITTER_ID", default="44196397")
 
 
 def main(request):
-
     try:
         data = load_data(TWITTER_ID)
 
