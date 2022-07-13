@@ -87,7 +87,7 @@ def transform_data(data: dict) -> DataFrame:
     :param data: json response from Twitter api
     :return:
     """
-    df = DataFrame(data["data"])
+    df = DataFrame(data["data"]).rename({"id": "tweet_id"}, axis=1)
     if "context_annotations" in df.columns:
         df = df.astype({"context_annotations": str})
     else:
