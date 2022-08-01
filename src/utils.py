@@ -23,7 +23,7 @@ def create_url(user_id: str) -> str:
     # each day, we load tweets from last 3 days so that we can track how tweet metrics increase over time
     start_time = (NOW - timedelta(days=90)).strftime(format="%Y-%m-%dT%H:%M:%S.000Z")
     end_time = NOW.strftime(format="%Y-%m-%dT%H:%M:%S.000Z")
-    return "https://api.twitter.com/2/users/{}/tweets?start_time={}&end_time={}".format(
+    return "https://api.twitter.com/2/users/{}/tweets?start_time={}&end_time={}&exclude=retweets&max_results=100".format(
         user_id, start_time, end_time
     )
 
